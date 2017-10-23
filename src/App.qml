@@ -117,35 +117,9 @@ Rectangle {
 	}
 	*/
 
-	Rectangle {
+	Diamond {
 		id: diamondTexture
 		anchors.fill: parent
-
-		Checkerboard {
-			property variant diamondWidthToHeightRatio: 0.6
-
-			columns: 25
-			rows: 25
-
-			id: checkerboard
-			anchors.centerIn: parent
-			width: (parent.width > parent.height ? parent.width : parent.height) * Math.sqrt(2) * (1/diamondWidthToHeightRatio)
-			height: checkerboard.width
-			transform: [
-				Rotation {
-					id: checkerboardRotation
-					origin.x: checkerboard.width / 2
-					origin.y: checkerboard.height / 2
-					axis { x: 0.0; y: 0.0; z: 1.0 }
-					angle: 45
-				},
-				Scale {
-					xScale: checkerboard.diamondWidthToHeightRatio
-					origin.x: checkerboard.width / 2
-					origin.y: checkerboard.height / 2
-				}
-			]
-		}
 	}
 
 	ShaderEffect {
