@@ -2,10 +2,20 @@ import QtQuick 2.3
 import QtQuick.Particles 2.0
 
 Rectangle {
-	id: rect
+	id: root
 	width: 640
 	height: 480
 	color: "black"
+
+	//Change menu bar button parent from wrapper, which forces a diamond pattern
+	//background using a shader, to the root item, which doesn't use any
+	//shaders.
+	function menuBarButtonFlipSideVisibleChanged(item,visible) {
+		if(visible)
+			item.parent = root;
+		else
+			item.parent = wrapper;
+	}
 
 	Rectangle {
 		id: wrapper
@@ -17,6 +27,18 @@ Rectangle {
 			text: "First"
 			baseX: parent.width * 0.4
 			baseY: 85
+
+			flipSideChild: Rectangle {
+				anchors.fill: parent
+				color: "white"
+				opacity: 1.0
+				MouseArea {
+					anchors.fill: parent
+					onClicked: menuBarButton1.showFullscreen = false;
+				}
+			}
+
+			onFlipSideVisibleChanged: menuBarButtonFlipSideVisibleChanged(this,visible)
 		}
 
 		MenuBarButton {
@@ -24,6 +46,8 @@ Rectangle {
 			text: "Second"
 			baseX: parent.width * 0.44
 			baseY: 85 + 130
+
+			onFlipSideVisibleChanged: menuBarButtonFlipSideVisibleChanged(this,visible)
 		}
 
 		MenuBarButton {
@@ -31,6 +55,8 @@ Rectangle {
 			text: "Third"
 			baseX: parent.width * 0.48
 			baseY: 85 + 130 * 2
+
+			onFlipSideVisibleChanged: menuBarButtonFlipSideVisibleChanged(this,visible)
 		}
 
 		ParticleSystem {
