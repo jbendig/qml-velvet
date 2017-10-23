@@ -34,6 +34,7 @@ Rectangle {
 	y: baseY
 	width: 6 * parent.width / 4
 	height: parent.height / 3
+	color: "#00000000" //Must be transparent or else it'll bleed through along the edges when flipped over.
 	antialiasing: true
 	state: "float"
 	transform: [
@@ -66,20 +67,25 @@ Rectangle {
 		}
 	]
 
-	Text {
-		color: "black"
-		text: menuItem.text
-		font.pointSize: 75
-		font.letterSpacing: -5
-		anchors.left: parent.left
-		anchors.top: parent.top
-		width: parent.width
-		height: parent.height
+	Rectangle {
+		id: frontSide
+		anchors.fill: parent
+		color: "#FFFFFF"
+		Text {
+			color: "black"
+			text: menuItem.text
+			font.pointSize: 75
+			font.letterSpacing: -5
+			anchors.left: parent.left
+			anchors.top: parent.top
+			width: parent.width
+			height: parent.height
+		}
 	}
 
 	Rectangle {
 		id: flipSide
-		color: "green" //Debug color to make it obvious when flipSideChild is not set.
+		color: "#00000000" //Must be transparent or can leak through along the edges due to rounding errors while animating.
 		anchors.left: parent.left
 		anchors.top: parent.top
 		width: parent.width
@@ -172,6 +178,7 @@ Rectangle {
 				PropertyAnimation { target: rotationX; properties: "angle"; to: -90; duration: flipAnimationTimeMs / 4.6; easing.type: Easing.Linear }
 				ScriptAction {
 					script: {
+						frontSide.opacity = 0.0;
 						flipSide.opacity = 1.0;
 						flipSide.enabled = true;
 						flipSideVisibleChanged(menuItem.showFullscreen);
@@ -194,6 +201,7 @@ Rectangle {
 				PropertyAnimation { target: rotationX; properties: "angle"; from: -180; to: -90; duration: 3.6 * flipAnimationTimeMs / 4.6; easing.type: Easing.Linear }
 				ScriptAction {
 					script: {
+						frontSide.opacity = 1.0;
 						flipSide.opacity = 0.0;
 						flipSide.enabled = false;
 						flipSideVisibleChanged(menuItem.showFullscreen);
@@ -215,8 +223,8 @@ Rectangle {
 	MouseArea {
 		anchors.fill: parent
 		hoverEnabled: true
-		onEntered: menuItem.color = "#FFAEAE";
-		onExited: menuItem.color = "#FFFFFF";
+		onEntered: frontSide.color = "#FFAEAE";
+		onExited: frontSide.color = "#FFFFFF";
 		onClicked: parent.showFullscreen = !parent.showFullscreen
 	}
 }
