@@ -6,6 +6,7 @@ Rectangle {
 	property variant text: "Text"
 	property bool showFullscreen: false //When true, menu bar button is flipped over and fills most of the parent.
 	property variant flipSideChild: Rectangle {}
+	readonly property int flipAnimationTimeMs: 250
 	signal flipSideVisibleChanged(bool visible) //Emitted at the exact moment the reverse side of the menu bar button is made visible or hidden.
 
 	onShowFullscreenChanged:  {
@@ -164,11 +165,11 @@ Rectangle {
 		Transition {
 			id: fullscreenShowTransition
 			enabled: false
-			PropertyAnimation { target: menuItem; properties: "x,y,width,height"; duration: 1500; easing.type: Easing.OutQuad }
-			PropertyAnimation { target: rotationY; properties: "angle"; duration: 1500; easing.type: Easing.OutQuad }
-			PropertyAnimation { target: rotationZ; properties: "angle"; duration: 1500; easing.type: Easing.OutQuad }
+			PropertyAnimation { target: menuItem; properties: "x,y,width,height"; duration: flipAnimationTimeMs; easing.type: Easing.OutQuad }
+			PropertyAnimation { target: rotationY; properties: "angle"; duration: flipAnimationTimeMs; easing.type: Easing.OutQuad }
+			PropertyAnimation { target: rotationZ; properties: "angle"; duration: flipAnimationTimeMs; easing.type: Easing.OutQuad }
 			SequentialAnimation {
-				PropertyAnimation { target: rotationX; properties: "angle"; to: -90; duration: 250; easing.type: Easing.Linear }
+				PropertyAnimation { target: rotationX; properties: "angle"; to: -90; duration: flipAnimationTimeMs / 4.6; easing.type: Easing.Linear }
 				ScriptAction {
 					script: {
 						flipSide.opacity = 1.0;
@@ -176,7 +177,7 @@ Rectangle {
 						flipSideVisibleChanged(menuItem.showFullscreen);
 					}
 				}
-				PropertyAnimation { target: rotationX; properties: "angle"; from: -90; to: -180; duration: 250 * 3.6; easing.type: Easing.Linear }
+				PropertyAnimation { target: rotationX; properties: "angle"; from: -90; to: -180; duration: 3.6 * flipAnimationTimeMs / 4.6; easing.type: Easing.Linear }
 			}
 		},
 		//Setup separate transition for hiding fullscreen mode because the
@@ -186,11 +187,11 @@ Rectangle {
 		Transition {
 			id: fullscreenHideTransition
 			enabled: false
-			PropertyAnimation { target: menuItem; properties: "x,y,width,height"; duration: 1500; easing.type: Easing.OutQuad }
-			PropertyAnimation { target: rotationY; properties: "angle"; duration: 1500; easing.type: Easing.OutQuad }
-			PropertyAnimation { target: rotationZ; properties: "angle"; duration: 1500; easing.type: Easing.OutQuad }
+			PropertyAnimation { target: menuItem; properties: "x,y,width,height"; duration: flipAnimationTimeMs; easing.type: Easing.OutQuad }
+			PropertyAnimation { target: rotationY; properties: "angle"; duration: flipAnimationTimeMs; easing.type: Easing.OutQuad }
+			PropertyAnimation { target: rotationZ; properties: "angle"; duration: flipAnimationTimeMs; easing.type: Easing.OutQuad }
 			SequentialAnimation {
-				PropertyAnimation { target: rotationX; properties: "angle"; from: -180; to: -90; duration: 250 * 3.6; easing.type: Easing.Linear }
+				PropertyAnimation { target: rotationX; properties: "angle"; from: -180; to: -90; duration: 3.6 * flipAnimationTimeMs / 4.6; easing.type: Easing.Linear }
 				ScriptAction {
 					script: {
 						flipSide.opacity = 0.0;
@@ -198,7 +199,7 @@ Rectangle {
 						flipSideVisibleChanged(menuItem.showFullscreen);
 					}
 				}
-				PropertyAnimation { target: rotationX; properties: "angle"; to: -65; duration: 250; easing.type: Easing.Linear }
+				PropertyAnimation { target: rotationX; properties: "angle"; to: -65; duration: flipAnimationTimeMs / 4.6; easing.type: Easing.Linear }
 				ScriptAction {
 					script: {
 						fullscreenHideTransition.enabled = false;
