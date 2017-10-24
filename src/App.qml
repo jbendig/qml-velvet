@@ -17,6 +17,10 @@ Rectangle {
 			item.parent = wrapper;
 	}
 
+	Background {
+		anchors.fill: parent
+	}
+
 	Rectangle {
 		id: wrapper
 		anchors.fill: parent
