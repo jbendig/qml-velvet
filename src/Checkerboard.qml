@@ -6,6 +6,14 @@ Rectangle {
 	property color color0: "black"
 	property color color1: "white"
 
+	function getTileWidth() {
+		return width / columns;
+	}
+
+	function getTileHeight() {
+		return height / rows;
+	}
+
 	ShaderEffect {
 		property int columns: parent.columns
 		property int rows: parent.rows

@@ -47,7 +47,14 @@ Rectangle {
 			baseX: parent.width * 0.44
 			baseY: 85 + 130
 
-			onFlipSideVisibleChanged: menuBarButtonFlipSideVisibleChanged(this,visible)
+			flipSideChild: TileMenu {
+				id: tileMenu2
+			}
+
+			onFlipSideVisibleChanged: {
+				menuBarButtonFlipSideVisibleChanged(this,visible)
+				tileMenu2.resetTiles();
+			}
 		}
 
 		MenuBarButton {
