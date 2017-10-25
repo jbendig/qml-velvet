@@ -8,6 +8,7 @@ Rectangle {
 	signal fallStartCompleted
 
 	function fallStart() {
+		fallStartTransition.enabled = true;
 		state = "fall-start";
 	}
 
@@ -16,14 +17,15 @@ Rectangle {
 		_fallFollowDifference = hypot(fallStartTile.x - centerX(tileButton),
 		                              fallStartTile.x + fallStartTile.height - centerY(tileButton));
 
-		fallStartTransition.enabled = false;
 		fallFollowTransition.enabled = true;
 		state = "fall-follow";
 	}
 
 	function reset() {
-		fallStartTransition.enabled = true;
+		fallStartTransition.enabled = false;
 		fallFollowTransition.enabled = false;
+		_fallFollowOffsetX = 0;
+		_fallFollowDifference = 0;
 		state = "";
 	}
 
@@ -74,21 +76,23 @@ Rectangle {
 	states: [
 		State {
 			name: "fall-start"
-			PropertyChanges { target: rotationZ; angle : 135 }
-			PropertyChanges { target: translate; y: 640 }
+			PropertyChanges { target: rotationZ; restoreEntryValues: true; explicit: true; angle : 135 }
+			PropertyChanges { target: translate; restoreEntryValues: true; explicit: true; y: 640 }
+			PropertyChanges { target: tileButton; restoreEntryValues: true; explicit: true; z: 2 }
 		},
 		State {
 			name: "fall-follow"
-			PropertyChanges { target: rotationZ; angle : _fallFollowOffsetX * 0.05 }
-			PropertyChanges { target: translate; x: _fallFollowOffsetX }
-			PropertyChanges { target: translate; y: 640 }
-			PropertyChanges { target: tileButton; z: 1 + 1 / _fallFollowDifference }
+			PropertyChanges { target: rotationZ; restoreEntryValues: true; explicit: true; angle : _fallFollowOffsetX * 0.05 }
+			PropertyChanges { target: translate; restoreEntryValues: true; explicit: true; x: _fallFollowOffsetX }
+			PropertyChanges { target: translate; restoreEntryValues: true; explicit: true; y: 640 }
+			PropertyChanges { target: tileButton; restoreEntryValues: true; explicit: true; z: 1 + 1 / _fallFollowDifference }
 		}
 	]
 
 	transitions: [
 		Transition {
 			id: fallStartTransition
+			enabled: false
 			SequentialAnimation {
 				PropertyAnimation { target: rotationZ; properties: "angle"; duration: 1000; easing.type: Easing.OutElastic }
 				PropertyAnimation { target: translate; properties: "y"; duration: 250; easing.type: Easing.Linear }

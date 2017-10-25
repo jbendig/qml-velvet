@@ -47,7 +47,7 @@ Rectangle {
 			for(var x = 0;x < tileGrid.columns;x++,index++)
 			{
 				var tileText = refText[index];
-				var tileClickedFunc = tileText == "Back" ? "function() { menuBarButton2.showFullscreen = false; }" : "function() { z = 2; this.fallStart(); }";
+				var tileClickedFunc = tileText == "Back" ? "function() { menuBarButton2.showFullscreen = false; }" : "function() { this.fallStart(); }";
 				var tileFallStartCompleted = "function() { for(var x = 0;x < tileMenu.tiles.length;x++) { var tile = tileMenu.tiles[x]; if(tile == this) continue; tile.fallFollow(this); } }";
 				var tile = Qt.createQmlObject("import QtQuick 2.3; TileButton { text: \"" + tileText + "\"; onClicked: " + tileClickedFunc + "; onFallStartCompleted: " + tileFallStartCompleted + "; }",tileGrid);
 				tile.color = (x % 2) ^ (y % 2) == 0 ? "red" : "blue";
