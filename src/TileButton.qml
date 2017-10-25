@@ -2,6 +2,7 @@ import QtQuick 2.3
 
 Rectangle {
 	property string text: ""
+	property int textSize: 24
 	property variant _fallFollowOffsetX: 0
 	property variant _fallFollowDifference: 0
 	signal clicked
@@ -45,13 +46,45 @@ Rectangle {
 	id: tileButton
 
 	Text {
+		property int textSize: tileButton.textSize
+
+		id: textItem
 		text: parent.text
 		anchors.centerIn: parent
 		color: "black"
+		font.pointSize: textSize
+
+		states: [
+			State {
+				name: "hover"
+				PropertyChanges { target: textItem; restoreEntryValues: true; explicit: true; font.pointSize: textSize * 1.5 }
+			}
+		]
+
+		transitions: [
+			Transition {
+				PropertyAnimation { target: textItem; properties: "font.pointSize"; duration: 250; easing.type: Easing.InOutQuad }
+			}
+		]
 	}
 
 	MouseArea {
 		anchors.fill: parent;
+		hoverEnabled: true
+		onEntered: {
+			if(text != "" && tileButton.state == "")
+			{
+				tileButton.state = "hover";
+				textItem.state = "hover";
+			}
+		}
+		onExited: {
+			if(tileButton.state == "hover")
+			{
+				tileButton.state = "";
+				textItem.state = "";
+			}
+		}
 		onClicked: {
 			if(text != "")
 				parent.clicked()
@@ -86,6 +119,10 @@ Rectangle {
 			PropertyChanges { target: translate; restoreEntryValues: true; explicit: true; x: _fallFollowOffsetX }
 			PropertyChanges { target: translate; restoreEntryValues: true; explicit: true; y: 640 }
 			PropertyChanges { target: tileButton; restoreEntryValues: true; explicit: true; z: 1 + 1 / _fallFollowDifference }
+		},
+		State {
+			name: "hover"
+			PropertyChanges { target: tileButton; restoreEntryValues: true; explicit: true; color: Qt.lighter(tileButton.color,1.1) }
 		}
 	]
 

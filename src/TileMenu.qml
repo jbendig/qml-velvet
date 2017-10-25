@@ -14,17 +14,25 @@ Rectangle {
 	id: tileMenu
 	anchors.fill: parent
 
-	//Checkerboard item to help cleanly calculate the tile button sizes. This
-	//is a temporary hack that'll probably be removed...
-	Checkerboard {
-		columns: 11
-		rows: 11
+	//Checkerboard item acts as a background and provides a clean way to
+	//calculate tile button sizes.
+	Rectangle {
+		anchors.fill: parent
+		clip: true
+		Checkerboard {
+			readonly property color baseColor0: "#CA4AE8"
+			readonly property color baseColor1: "#FF4ED5"
+			readonly property variant lighterFactor: 0.8
+			columns: 11
+			rows: 11
+			color0: Qt.lighter(baseColor0,lighterFactor)
+			color1: Qt.lighter(baseColor1,lighterFactor)
 
-		id: checkerboard
-		visible: false
-		anchors.centerIn: parent
-		width: (parent.width > parent.height ? parent.width : parent.height) * Math.sqrt(2)
-		height: checkerboard.width
+			id: checkerboard
+			anchors.centerIn: parent
+			width: (parent.width > parent.height ? parent.width : parent.height) * Math.sqrt(2)
+			height: checkerboard.width
+		}
 	}
 
 	Grid {
@@ -47,10 +55,13 @@ Rectangle {
 			for(var x = 0;x < tileGrid.columns;x++,index++)
 			{
 				var tileText = refText[index];
+				var tileTextSize = tileText == "Back" ? "18" : "24";
 				var tileClickedFunc = tileText == "Back" ? "function() { menuBarButton2.showFullscreen = false; }" : "function() { this.fallStart(); }";
 				var tileFallStartCompleted = "function() { for(var x = 0;x < tileMenu.tiles.length;x++) { var tile = tileMenu.tiles[x]; if(tile == this) continue; tile.fallFollow(this); } }";
-				var tile = Qt.createQmlObject("import QtQuick 2.3; TileButton { text: \"" + tileText + "\"; onClicked: " + tileClickedFunc + "; onFallStartCompleted: " + tileFallStartCompleted + "; }",tileGrid);
-				tile.color = (x % 2) ^ (y % 2) == 0 ? "red" : "blue";
+				var tile = Qt.createQmlObject("import QtQuick 2.3; TileButton { text: \"" + tileText + "\"; textSize: " + tileTextSize + "; onClicked: " + tileClickedFunc + "; onFallStartCompleted: " + tileFallStartCompleted + "; }",tileGrid);
+				tile.color = (x % 2) ^ (y % 2) == 0 ? checkerboard.baseColor0 : checkerboard.baseColor1;
+				if(tile.text == "")
+					tile.color = Qt.lighter(tile.color,checkerboard.lighterFactor);
 				tile.z = 1;
 				tiles.push(tile);
 			}
