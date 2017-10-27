@@ -57,7 +57,7 @@ Rectangle {
 
 			onFlipSideVisibleChanged: {
 				menuBarButtonFlipSideVisibleChanged(this,visible)
-				tileMenu2.resetTiles();
+				tileMenu2.reset();
 			}
 		}
 

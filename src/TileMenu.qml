@@ -5,15 +5,19 @@ Rectangle {
 	readonly property color color1: "#FF4ED5" //Second checkerboard tile button color.
 	readonly property variant borderColorLighterFactor: 0.8 //Amount to adjust checkerboardd color for non-interactive border tiles. < 1.0 to darken and > 1.0 to lighten.
 
+	property variant tileSize: 0
 	property variant tiles: []
 
-	//Move all tiles back to their original positions.
-	function resetTiles() {
+	function reset() {
+		//Move all tiles back to their original positions.
 		for(var x = 0;x < tiles.length;x++)
 		{
 			var tile = tiles[x];
 			tile.reset();
 		}
+
+		//Reset tunnel animation.
+		tunnel.state = "";
 	}
 
 	id: tileMenu
@@ -25,6 +29,7 @@ Rectangle {
 		id: tileGrid
 		anchors.fill: parent
 		leftPadding: -12
+		z: 1
 		//Only six of the ten columns have interactive buttons. One on the left
 		//is part of the border. All of the others are on the right so when the
 		//tile menu is revealed, it looks like it continues on off the edge of
@@ -47,6 +52,18 @@ Rectangle {
 		clip: true
 		enabled: false
 		z: -1
+	}
+
+	Tunnel {
+		id: tunnel
+		opacity: 0.0
+		width: tileSize * 6
+		height: tileSize * 3
+		x: tileGrid.leftPadding + tileSize
+		y: tileGrid.topPadding + tileSize
+
+		color0: Qt.lighter(parent.color0,0.7);
+		color1: Qt.lighter(parent.color1,0.7);
 	}
 
 	Component.onCompleted: {
@@ -74,9 +91,9 @@ Rectangle {
 				var buildTile = function(parent) {
 					var tileText = refText[index];
 					var tileTextSize = tileText == "Back" ? "18" : "24";
-					var tileClickedFunc = tileText == "Back" ? "function() { menuBarButton2.showFullscreen = false; }" : "function() { this.fallStart(); }";
+					var tileClickedFunc = tileText == "Back" ? "function() { menuBarButton2.showFullscreen = false; }" : "function() { this.fallStart(); tunnel.opacity = 1.0; tunnel.state = \"playing\"; }";
 					var tileFallStartCompleted = "function() { for(var x = 0;x < tileMenu.tiles.length;x++) { var tile = tileMenu.tiles[x]; if(tile == this || tile.text == \" \") continue; tile.fallFollow(this); } }";
-					return Qt.createQmlObject("import QtQuick 2.3; TileButton { text: \"" + tileText + "\"; textSize: " + tileTextSize + "; onClicked: " + tileClickedFunc + "; onFallStartCompleted: " + tileFallStartCompleted + "; }",parent);
+					return Qt.createQmlObject("import QtQuick 2.3; TileButton { text: \"" + tileText + "\"; textSize: " + tileTextSize + "; width: tileMenu.tileSize; height: tileMenu.tileSize; onClicked: " + tileClickedFunc + "; onFallStartCompleted: " + tileFallStartCompleted + "; }",parent);
 				};
 
 				//The top layer contains the interactive buttons. Tiles that are
@@ -104,7 +121,7 @@ Rectangle {
 		}
 	}
 
-	//Reclaculate tile sizes when menu size changes so tiles _appear_ to scale
+	//Reclaculate tile size when menu size changes so tiles _appear_ to scale
 	//at the same rate. Note that this scale is not linear because the tiles
 	//must always be square but the menu width and height are changed
 	//independently.
@@ -112,14 +129,7 @@ Rectangle {
 		if(tiles.length == 0)
 			return;
 
-		var tileSize = tileMenu.parent.height / 4;
-		for(var x = 0;x < tiles.length;x++)
-		{
-			var tile = tiles[x];
-			tile.width = tileSize;
-			tile.height = tile.width;
-		}
-
+		tileSize = tileMenu.parent.height / 4;
 		tileGrid.topPadding = -tileMenu.parent.height / 8;
 	}
 }
