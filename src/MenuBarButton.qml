@@ -151,7 +151,7 @@ Rectangle {
 		},
 		State {
 			name: "fullscreen"
-			PropertyChanges { target: menuItem; restoreEntryValues: true; explicit: true; x: -10; }
+			PropertyChanges { target: menuItem; restoreEntryValues: true; explicit: true; x: -parent.width * 0.1; }
 			PropertyChanges { target: menuItem; restoreEntryValues: true; explicit: true; y: parent.height * (1 - 0.833) / 2; }
 			PropertyChanges { target: menuItem; restoreEntryValues: true; explicit: true; height: parent.height * 0.833; }
 			PropertyChanges { target: menuItem; restoreEntryValues: true; explicit: true; width: parent.width * 1.2; }

@@ -28,6 +28,7 @@ Rectangle {
 		_fallFollowOffsetX = 0;
 		_fallFollowDifference = 0;
 		state = "";
+		textItem.state = "";
 	}
 
 	function centerX(item) {
@@ -47,17 +48,18 @@ Rectangle {
 
 	Text {
 		property int textSize: tileButton.textSize
+		readonly property variant textSizeRelativeScaleFactor: 1/96.0 //How much to scale textSize relative to tile width. Used to make text scale with the button's size.
 
 		id: textItem
 		text: parent.text
 		anchors.centerIn: parent
 		color: "black"
-		font.pointSize: textSize
+		font.pointSize: tileButton.width * textSizeRelativeScaleFactor * textSize + 1.0
 
 		states: [
 			State {
 				name: "hover"
-				PropertyChanges { target: textItem; restoreEntryValues: true; explicit: true; font.pointSize: textSize * 1.5 }
+				PropertyChanges { target: textItem; restoreEntryValues: true; explicit: true; font.pointSize: font.pointSize * 1.5 }
 			}
 		]
 
