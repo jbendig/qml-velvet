@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import QtGraphicalEffects 1.0
 
 Rectangle {
 	readonly property variant playTime: 5000 //How long it takes for the animation to play in milliseconds.
@@ -18,10 +19,12 @@ Rectangle {
 		PropertyChanges { target: tunnel; restoreEntryValues: true; explicit: true; height: height + playHeightChange }
 		PropertyChanges { target: tunnel; restoreEntryValues: true; explicit: true; x: x - playWidthChange / 2 }
 		PropertyChanges { target: tunnel; restoreEntryValues: true; explicit: true; y: y - playHeightChange / 2 }
+		PropertyChanges { target: zoomBlur; restoreEntryValues: true; explicit: true; length: 48 }
 	}
 
 	transitions: Transition {
 		PropertyAnimation { target: tunnel; properties: "x,y,width,height"; duration: state == "playing" ? playTime: 0; easing.type: Easing.InQuint }
+		PropertyAnimation { target: zoomBlur; properties: "length"; duration: state == "playing" ? playTime: 0; easing.type: Easing.InQuint }
 	}
 
 	Timer {
@@ -167,5 +170,13 @@ Rectangle {
 				//Apply fog so further away intersection points appear darker.
 				gl_FragColor.xyz *= FogFactor(closestPlaneDistance);
 			}"
+	}
+
+	ZoomBlur {
+		id: zoomBlur
+		anchors.fill: parent
+		source: shaderEffect
+		samples: 12
+		length: 0
 	}
 }
