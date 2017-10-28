@@ -7,6 +7,7 @@ Rectangle {
 
 	property variant tileSize: 0
 	property variant tiles: []
+	signal goBack;
 
 	function reset() {
 		//Move all tiles back to their original positions.
@@ -64,6 +65,8 @@ Rectangle {
 
 		color0: Qt.lighter(parent.color0,0.7);
 		color1: Qt.lighter(parent.color1,0.7);
+
+		onDonePlaying: tileMenu.goBack();
 	}
 
 	Component.onCompleted: {
@@ -91,7 +94,7 @@ Rectangle {
 				var buildTile = function(parent) {
 					var tileText = refText[index];
 					var tileTextSize = tileText == "Back" ? "18" : "24";
-					var tileClickedFunc = tileText == "Back" ? "function() { menuBarButton2.showFullscreen = false; }" : "function() { this.fallStart(); tunnel.opacity = 1.0; tunnel.state = \"playing\"; }";
+					var tileClickedFunc = tileText == "Back" ? "function() { tileMenu.goBack(); }" : "function() { this.fallStart(); tunnel.opacity = 1.0; tunnel.state = \"playing\"; }";
 					var tileFallStartCompleted = "function() { for(var x = 0;x < tileMenu.tiles.length;x++) { var tile = tileMenu.tiles[x]; if(tile == this || tile.text == \" \") continue; tile.fallFollow(this); } }";
 					return Qt.createQmlObject("import QtQuick 2.3; TileButton { text: \"" + tileText + "\"; textSize: " + tileTextSize + "; width: tileMenu.tileSize; height: tileMenu.tileSize; onClicked: " + tileClickedFunc + "; onFallStartCompleted: " + tileFallStartCompleted + "; }",parent);
 				};

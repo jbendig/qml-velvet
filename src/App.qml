@@ -53,6 +53,7 @@ Rectangle {
 
 			flipSideChild: TileMenu {
 				id: tileMenu2
+				onGoBack: menuBarButton2.showFullscreen = false;
 			}
 
 			onFlipSideVisibleChanged: {

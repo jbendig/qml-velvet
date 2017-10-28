@@ -113,14 +113,14 @@ Rectangle {
 			name: "fall-start"
 			PropertyChanges { target: rotationZ; restoreEntryValues: true; explicit: true; angle : 135 }
 			PropertyChanges { target: translate; restoreEntryValues: true; explicit: true; y: 640 }
-			PropertyChanges { target: tileButton; restoreEntryValues: true; explicit: true; z: 2 }
+			PropertyChanges { target: tileButton; restoreEntryValues: true; explicit: true; opacity: 0.0; z: 2 }
 		},
 		State {
 			name: "fall-follow"
 			PropertyChanges { target: rotationZ; restoreEntryValues: true; explicit: true; angle : _fallFollowOffsetX * 0.05 }
 			PropertyChanges { target: translate; restoreEntryValues: true; explicit: true; x: _fallFollowOffsetX }
 			PropertyChanges { target: translate; restoreEntryValues: true; explicit: true; y: 640 }
-			PropertyChanges { target: tileButton; restoreEntryValues: true; explicit: true; z: 1 + 1 / _fallFollowDifference }
+			PropertyChanges { target: tileButton; restoreEntryValues: true; explicit: true; opacity: 0.0; z: 1 + 1 / _fallFollowDifference }
 		},
 		State {
 			name: "hover"
@@ -137,15 +137,25 @@ Rectangle {
 				PropertyAnimation { target: translate; properties: "y"; duration: 250; easing.type: Easing.Linear }
 				ScriptAction { script: fallStartCompleted(); }
 				PropertyAnimation { target: translate; properties: "y"; duration: 750; easing.type: Easing.Linear }
+
+				//Hide tile after it falls off the screen so it doesn't flip into view during MenuBarButton flip animation.
+				PropertyAnimation { target: tileButton; properties: "opacity"; to: 0.0; duration: 0; easing.type: Easing.Linear } 
 			}
 		},
 		Transition {
 			id: fallFollowTransition
 			enabled: false
-			PropertyAnimation { target: rotationZ; properties: "angle"; duration: 1.5 * _fallFollowDifference; easing.type: Easing.Linear }
-			PropertyAnimation { target: translate; properties: "x"; duration: 1.5 * _fallFollowDifference; easing.type: Easing.InQuint }
-			PropertyAnimation { target: translate; properties: "y"; duration: 1.5 * _fallFollowDifference; easing.type: Easing.InQuint }
-			PropertyAnimation { target: tileButton; properties: "z"; duration: 0; }
+			SequentialAnimation {
+				ParallelAnimation {
+					PropertyAnimation { target: rotationZ; properties: "angle"; duration: 1.5 * _fallFollowDifference; easing.type: Easing.Linear }
+					PropertyAnimation { target: translate; properties: "x"; duration: 1.5 * _fallFollowDifference; easing.type: Easing.InQuint }
+					PropertyAnimation { target: translate; properties: "y"; duration: 1.5 * _fallFollowDifference; easing.type: Easing.InQuint }
+					PropertyAnimation { target: tileButton; properties: "z"; duration: 0; }
+				}
+
+				//See fallStartTransition above for explanation.
+				PropertyAnimation { target: tileButton; properties: "opacity"; to: 0.0; duration: 0; easing.type: Easing.Linear } 
+			}
 		}
 	]
 }
