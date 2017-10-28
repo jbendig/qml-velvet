@@ -13,4 +13,4 @@ On Fedora, `qmlscene` is part of the `qt5-qtdeclarative-devel` package. Run the 
 
 ## Instructions
 
-Navigate to the `src` directory and run `qmlscene App.qml`.
+Navigate to the `src` directory and run `qmlscene --multisample App.qml`.
