@@ -32,17 +32,15 @@ Rectangle {
 			baseX: parent.width * 0.4
 			baseY: 85
 
-			flipSideChild: Rectangle {
-				anchors.fill: parent
-				color: "white"
-				opacity: 1.0
-				MouseArea {
-					anchors.fill: parent
-					onClicked: menuBarButton1.showFullscreen = false;
-				}
+			flipSideChild: TileMenu {
+				id: tileMenu1
+				onGoBack: menuBarButton1.showFullscreen = false;
 			}
 
-			onFlipSideVisibleChanged: menuBarButtonFlipSideVisibleChanged(this,visible)
+			onFlipSideVisibleChanged: {
+				menuBarButtonFlipSideVisibleChanged(this,visible)
+				tileMenu1.reset();
+			}
 		}
 
 		MenuBarButton {
@@ -68,7 +66,15 @@ Rectangle {
 			baseX: parent.width * 0.48
 			baseY: 85 + 130 * 2
 
-			onFlipSideVisibleChanged: menuBarButtonFlipSideVisibleChanged(this,visible)
+			flipSideChild: TileMenu {
+				id: tileMenu3
+				onGoBack: menuBarButton3.showFullscreen = false;
+			}
+
+			onFlipSideVisibleChanged: {
+				menuBarButtonFlipSideVisibleChanged(this,visible)
+				tileMenu3.reset();
+			}
 		}
 
 		ParticleSystem {
