@@ -1,7 +1,9 @@
 qml-velvet
 ----------
 
-This is an interactive graphic demo written in QML. All artwork is generated procedurally. Currently a **work in progress**.
+This is an interactive graphic demo written in QML. All artwork is generated procedurally.
+
+[Video Demostration](https://streamable.com/jg0ui)
 
 ## Requirements
 
