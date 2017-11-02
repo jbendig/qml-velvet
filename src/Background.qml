@@ -22,6 +22,7 @@ Rectangle {
 
 		anchors.fill: parent
 		fragmentShader: "
+			#version 130
 			varying vec2 qt_TexCoord0;
 			uniform float time;
 			uniform vec3 cameraPos;
@@ -48,8 +49,8 @@ Rectangle {
 				vec3 rayGroundIntersection = rayOrigin + rayDirection * t;
 
 				//Use a checkerboard texture for the floor plane.
-				int column = rayGroundIntersection.x + 500; //Give column and row a rediculous offset to avoid the origin modulo problem.
-				int row = rayGroundIntersection.z + 500;
+				int column = int(rayGroundIntersection.x + 500); //Give column and row a rediculous offset to avoid the origin modulo problem.
+				int row = int(rayGroundIntersection.z + 500);
 				if(((column % 2) ^ (row % 2)) == 0)
 					gl_FragColor = vec4(121.0/255.0,37.0/255.0,232.0/255.0,1.0);
 				else

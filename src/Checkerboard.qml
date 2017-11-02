@@ -22,6 +22,7 @@ Rectangle {
 
 		anchors.fill: parent
 		fragmentShader: "
+			#version 130
 			varying highp vec2 qt_TexCoord0;
 			uniform int columns;
 			uniform int rows;
@@ -30,8 +31,8 @@ Rectangle {
 			uniform lowp float qt_Opacity;
 
 			void main() {
-				int column = qt_TexCoord0.x * columns;
-				int row = qt_TexCoord0.y * rows;
+				int column = int(qt_TexCoord0.x * columns);
+				int row = int(qt_TexCoord0.y * rows);
 				if(((column % 2) ^ (row % 2)) == 0)
 					gl_FragColor = color0;
 				else

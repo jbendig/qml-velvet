@@ -153,6 +153,7 @@ Rectangle {
 
 		anchors.fill: parent
 		fragmentShader: "
+			#version 130
 			varying highp vec2 qt_TexCoord0;
 			uniform sampler2D mask;
 			uniform sampler2D source;

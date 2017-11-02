@@ -82,12 +82,13 @@ Rectangle {
 			anchors.fill: parent
 
 			fragmentShader: "
+				#version 130
 				varying vec2 qt_TexCoord0;
 				uniform float time; //Range is [0.0,1.0].
 				uniform vec4 color0;
 				uniform vec4 color1;
 
-				static const float EPSILON = 0.00001;
+				const float EPSILON = 0.00001;
 
 				float RayPlaneIntersection(vec3 rayOrigin,vec3 rayDirection,vec3 planePosition,vec3 planeDirection)
 				{
@@ -113,7 +114,7 @@ Rectangle {
 				{
 					const float distance = 130.0;
 					const float startOffset = 0.5;
-					float t = startOffset + time * (1 - startOffset);
+					float t = startOffset + time * (1.0 - startOffset);
 					return t * t * t * t * distance;
 				}
 
@@ -121,14 +122,14 @@ Rectangle {
 				//camera.
 				float FogFactor(float pointDistance)
 				{
-					return min((1000 - time * time * time * 1000) / (pointDistance*pointDistance),1.0);
+					return min((1000.0 - time * time * time * 1000.0) / (pointDistance*pointDistance),1.0);
 				}
 
 				//How much to desaturate the start colors until they turn
 				//monochromatic.
 				float ColorBlending()
 				{
-					return pow(time,8);
+					return pow(time,8.0);
 				}
 
 				void main() {
@@ -144,31 +145,31 @@ Rectangle {
 					vec3 viewPlanePoint = rayOrigin + vec3(screenCoordinates - vec2(0.5,0.5),1.0);
 					vec3 rayDirection = normalize(viewPlanePoint - rayOrigin);
 
-					vec3 planePositions[4] = {
+					vec3 planePositions[4] = vec3[](
 						vec3(0.0,-5.0,0.0), //Bottom
 						vec3(0.0,5.0,0.0), //Top
 						vec3(-5.0,0.0,0.0), //Left
 						vec3(5.0,0.0,0.0) //Right
-					};
-					vec3 planeDirections[4] = {
+					);
+					vec3 planeDirections[4] = vec3[](
 						vec3(0.0,1.0,0.0), //Bottom
 						vec3(0.0,-1.0,0.0), //Top
 						vec3(1.0,0.0,0.0), //Left
 						vec3(-1.0,0.0,0.0) //Right
-					};
-					int planePatternSamplingDimensions[8] = { //(column,row) ordered pair where (x=0,y=1,z=2)
+					);
+					int planePatternSamplingDimensions[8] = int[]( //(column,row) ordered pair where (x=0,y=1,z=2)
 						0,2, //Bottom
 						0,2, //Top
 						1,2, //Left
 						1,2 //Right
-					};
+					);
 					float tileScale = 1.0;
-					float tileOffset[8] = { //Give column and row a rediculous offset to avoid the origin modulo problem.
-						500,500, //Bottom
-						501,500, //Top
-						501,500, //Left
-						500,500, //Right
-					};
+					float tileOffset[8] = float[]( //Give column and row a rediculous offset to avoid the origin modulo problem.
+						500.0,500.0, //Bottom
+						501.0,500.0, //Top
+						501.0,500.0, //Left
+						500.0,500.0 //Right
+					);
 
 					int closestPlane = -1;
 					float closestPlaneDistance = 100000000000.0;
@@ -196,8 +197,8 @@ Rectangle {
 					vec3 rayPlaneIntersection = rayOrigin + rayDirection * closestPlaneDistance;
 
 					//Use intersection point to compute checkerboard color.
-					int column = Vec3Attr(rayPlaneIntersection,planePatternSamplingDimensions[closestPlane * 2 + 0]) * tileScale + tileOffset[closestPlane * 2 + 0];
-					int row = Vec3Attr(rayPlaneIntersection,planePatternSamplingDimensions[closestPlane * 2 + 1]) * tileScale + tileOffset[closestPlane * 2 + 1];
+					int column = int(Vec3Attr(rayPlaneIntersection,planePatternSamplingDimensions[closestPlane * 2 + 0]) * tileScale + tileOffset[closestPlane * 2 + 0]);
+					int row = int(Vec3Attr(rayPlaneIntersection,planePatternSamplingDimensions[closestPlane * 2 + 1]) * tileScale + tileOffset[closestPlane * 2 + 1]);
 					if(((column % 2) ^ (row % 2)) == 0)
 						gl_FragColor = mix(color0,vec4(0.0,0.0,0.0,1.0),ColorBlending());
 					else
